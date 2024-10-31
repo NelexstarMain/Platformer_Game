@@ -1,6 +1,6 @@
-- [ ] Player class: player movement, health
-- [ ] Enemy class 
-- [ ] Enemy simple ai
+- [x] Player class: player movement, health
+- [x] Enemy class 
+- [x] Enemy simple ai
 - [ ] Player Shooting Method 
 - [ ] Game loop
 - [ ] Player Menu: New weapons
