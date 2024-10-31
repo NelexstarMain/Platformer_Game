@@ -30,7 +30,7 @@ class Player:
         self.y: int = y
         self.health: int = health
 
-        self.speed: int = 5 
+        self.speed: int = 2 
 
         self.width: int = 30
         self.height: int = 30
@@ -40,21 +40,11 @@ class Player:
 
         self.visible: bool = True
 
-    def move(self, key: pygame.key) -> None:
-        """Move the player based on the key pressed
-        moves left when left arrow key is pressed
-        moves right when right arrow key is pressed
-        moves up when up arrow key is pressed
-        moves down when down arrow key is pressed"""
+        self.down = False
+        self.left = False
+        self.right = False
+        self.up = False
 
-        if key == pygame.K_UP: # UP
-            self.y -= self.speed
 
-        elif key == pygame.K_DOWN: # DOWN
-            self.y += self.speed
 
-        elif key == pygame.K_LEFT: # LEFT
-            self.x -= self.speed
-
-        elif key == pygame.K_RIGHT: # RIGHT
-            self.x += self.speed
+        

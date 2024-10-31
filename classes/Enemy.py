@@ -1,5 +1,6 @@
+import math
 import pygame
-
+import random
 
 class Enemy:
     """Enemy class
@@ -18,35 +19,26 @@ class Enemy:
         self.health: int = health
         self.angle: int = 0
 
-        self.speed: int = 5
+        self.speed: int = 1
         self.width: int = 30
         self.height: int = 30
 
-        self.view_range: int = 100
+        self.view_range: int = 400
 
         self.view: pygame.Rect = pygame.Rect(0, 0, self.view_range, self.view_range)
         self.body: pygame.Rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         self.visible: bool = True
 
-        self.move_direction: int = 0
 
 
     def move(self) -> None:
-        """Move enemy in the chosen direction"""
-        match self.move_direction:
-            case 0:
-                self.x += self.speed # RIGHT
-            case 1:
-                self.x -= self.speed # LEFT
-            case 2:
-                self.y += self.speed # UP
-            case 3:
-                self.y -= self.speed # DOWN
-            case _:
-                raise ValueError("Invalid direction")
-            
+
+        self.body.x += math.cos(math.radians(self.angle)) * self.speed
+        self.body.y += math.sin(math.radians(self.angle)) * self.speed    
+                    
         self.view.center = self.body.center
+
 
     def collided(self, first_Rect: str = "body", obstacles: list = []) -> bool:
         """Checks if the player collides with any obstacle"""
@@ -62,31 +54,28 @@ class Enemy:
                     return True
                 return False
 
-    def simple_ai(self, player) -> None:
+    def simple_ai(self, player) -> bool:
         """Simple ai algorithm to decide which direction to move in
         when player is near
         walking in the direction of the player
 
         TODO: implement more complex ai algorithms
-        TODO: Enemys teamwork"""
+        TODO: Enemys teamwork
+        """
 
         if self.collided("view", [player]):
 
-        player_position = pygame.Vector2(player.body.x, player.body.y)
-        enemy_position = pygame.Vector2(self.body.x, self.body.y)
+            player_position = pygame.Vector2(player.body.centerx, player.body.centery)
+            enemy_position = pygame.Vector2(self.body.centerx, self.body.centery)
 
-        direction = (player_position - enemy_position).normalize()
-        direction *= self.speed
+            direction = (player_position - enemy_position)
+            print(direction)
+            direction *= self.speed
 
-        if direction.x > direction.y:
-            if direction.x > 0:
-                self.move_direction = 0
-            else:
-                self.move_direction = 1
-                
+            angle = math.degrees(math.atan2(direction.y + random.randint(-50, 50), direction.x + random.randint(-50, 50)))
+
+            self.angle = angle
+
         else:
-            if direction.y > 0:
-                self.move_direction = 3
-            else:
-                self.move_direction = 2
+            self.angle += 10
 
