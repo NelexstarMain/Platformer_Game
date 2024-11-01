@@ -1,8 +1,10 @@
 from classes.Enemy import Spawner
 from classes.Player import Player
 
+import math
 import pygame
 import random
+
 
 pygame.init()
 
@@ -10,13 +12,16 @@ pygame.mixer.music.load("assets/sounds/loop.mp3")
 pygame.mixer.music.play(-1)
 
 shot = pygame.mixer.Sound("assets/sounds/shot.mp3")
-shot.set_volume(0.2)
+shot.set_volume(0.4)
 hit = pygame.mixer.Sound("assets/sounds/hit.mp3")
-hit.set_volume(0.2)
+hit.set_volume(0.4)
 roar_1 = pygame.mixer.Sound("assets/sounds/roar_1.wav")
 roar_1.set_volume(0.3)
+
 roar_2 = pygame.mixer.Sound("assets/sounds/roar_2.wav")
+roar_2.set_volume(0.3)
 roar_3 = pygame.mixer.Sound("assets/sounds/roar_3.wav")
+roar_3.set_volume(0.1)
 
 class Game:
     def __init__(self):
@@ -50,8 +55,13 @@ class Game:
         keys = pygame.key.get_pressed()
         for spawner in self.spawners:
             enemy = spawner.spawn(random.choice(["Zombie", "Zombie", "Zombie", "Pterodactylus", "Pterodactylus", "Boss"]))
+            # roar_3.play()
             if enemy is not None:
                 self.enemies.append(enemy)
+
+        if random.randint(0, 50) == 0:
+            roar_2.play()      
+
 
         for enemy in self.enemies:
             for bullet in self.bullets:
@@ -66,10 +76,7 @@ class Game:
                 if bullet.body.x < 0 or bullet.body.x > 1280 or bullet.body.y < 0 or bullet.body.y > 700:
                     self.bullets.remove(bullet)
                 
-                if enemy.distance == 50:
-                    roar_2.play()
-                if enemy.distance == 400:
-                    roar_3.play()
+
 
         # Handle movement using held keys
         if keys[pygame.K_UP]:
@@ -100,7 +107,7 @@ class Game:
             bullet.draw(self.screen)
             
                 
-        pygame.draw.rect(self.screen, (255, 255, 0), self.player.body)
+        pygame.draw.rect(self.screen, (25, 75, 0), self.player.body)
         pygame.display.flip()
 
 if __name__ == "__main__":
