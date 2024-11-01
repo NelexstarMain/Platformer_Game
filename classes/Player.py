@@ -1,4 +1,5 @@
 import pygame
+import math
 # Importing pygame module
 
 
@@ -40,11 +41,45 @@ class Player:
 
         self.visible: bool = True
 
-        self.down = False
-        self.left = False
-        self.right = False
-        self.up = False
+        self.ammo = 1000
+    
+    def shooting(self, vector):
+        """Method to simulate shooting"""
+        # TODO: implement shooting logic here
+        if self.ammo > 0:
+            self.ammo -= 1
+            return Bullet(self.body.centerx, self.body.centery, vector)
+
+
+
+
+
+class Bullet:
+    def __init__(self, x, y, vector) -> None:
+        self.x = x
+        self.y = y
+        self.speed = 10
+        self.body = pygame.Rect(self.x, self.y, 2, 2)
+        self.vector = vector
+        self.fading_distance = 250
+        self.alpha = 0
+
+    def move(self) -> None:
+        """Method to simulate bullet movement"""
+        # TODO: implement bullet movement logic here
+        self.body.x += self.vector.x * self.speed
+        self.body.y += self.vector.y * self.speed
+
+    def update_visibility(self, player):
+        distance = math.sqrt((self.body.centerx - player.body.centerx)**2 + (self.body.centery - player.body.centery)**2)
+        # Normalize the distance to a value between 0 and 1
+        normalized_distance = min(distance / self.fading_distance, 1)  # Clamp at 1 to avoid exceeding max visibility
+        # Calculate the alpha value based on normalized distance
+        self.alpha = int(255 * (1 - normalized_distance))  # Higher distance => lower alpha
 
 
 
         
+    def draw(self, screen):
+        """Method to draw the bullet"""
+        pygame.draw.rect(screen, (self.alpha, self.alpha, self.alpha), self.body)
