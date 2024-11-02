@@ -1,5 +1,6 @@
 from classes.Enemy import Spawner
-from classes.Player import Player
+from classes.Player import Player, Bullet
+from classes.Terrain import Terrain
 
 import math
 import pygame
@@ -9,6 +10,7 @@ import random
 pygame.init()
 
 pygame.mixer.music.load("assets/sounds/loop.mp3")
+pygame.mixer.music.set_volume(1.2)
 pygame.mixer.music.play(-1)
 
 shot = pygame.mixer.Sound("assets/sounds/shot.mp3")
@@ -28,13 +30,15 @@ class Game:
         self.screen = pygame.display.set_mode((1280, 700))
         self.clock = pygame.time.Clock()
         self.player = Player(x=400, y=300)
+        self.terrain = Terrain()
         self.enemies = []
-        self.spawners = [Spawner(x=random.randint(0, 1280), y=random.randint(0, 700)) for _ in range(3)]
+        self.spawners = [Spawner(x=random.randint(0, 1280), y=random.randint(0, 700)) for _ in range(4)]
         self.bullets = []
 
 
     def run(self):
         while True:
+            self.player.shooting = False
             self.clock.tick(30)  # Maintain 60 FPS frame rate
             self.handle_events()
             self.update_game_state()
@@ -45,27 +49,33 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 break
+
+            vector = pygame.Vector2(pygame.mouse.get_pos()) -  pygame.Vector2(self.player.body.center)
+            self.player.angle = math.degrees(math.atan2(vector.y, vector.x))
+
             if event.type == pygame.MOUSEBUTTONDOWN:
-                vector = pygame.Vector2(pygame.mouse.get_pos()) -  pygame.Vector2(self.player.body.center)
+                self.player.shooting = True
                 if vector.length() > 0:
                     shot.play()
-                    self.bullets.append(self.player.shooting(vector.normalize()))
+                    
+                    self.bullets.append(Bullet(self.player.rect_1.centerx, self.player.rect_1.centery, vector.normalize()))
 
     def update_game_state(self):
         keys = pygame.key.get_pressed()
         for spawner in self.spawners:
-            enemy = spawner.spawn(random.choice(["Zombie", "Zombie", "Zombie", "Pterodactylus", "Pterodactylus", "Boss"]))
-            # roar_3.play()
+            enemy = spawner.spawn(random.choice(["Zombie", "Zombie", "Zombie", "Pterodactylus", "Pterodactylus", "Ghost"]))
             if enemy is not None:
                 self.enemies.append(enemy)
 
         if random.randint(0, 50) == 0:
-            roar_2.play()      
-
+            if random.randint(0, 3) == 0:
+                roar_3.play()    
+            else:
+                roar_2.play()  
 
         for enemy in self.enemies:
             for bullet in self.bullets:
-                if enemy.collided("body", [bullet]):  # Check collision between enemy and each bullet
+                if enemy.collided("body", [bullet]):
                     enemy.beeing_hit()
                     hit.play()
                     roar_1.play()
@@ -96,6 +106,8 @@ class Game:
 
     def draw(self):
         self.screen.fill((0, 0, 0))
+        
+        self.terrain.draw(self.player, self.screen)
         for enemy in self.enemies:
             enemy.update_visibility(self.player)
             enemy.draw(self.screen)
@@ -105,9 +117,10 @@ class Game:
             bullet.move()
             bullet.update_visibility(self.player)
             bullet.draw(self.screen)
+        
             
                 
-        pygame.draw.rect(self.screen, (25, 75, 0), self.player.body)
+        self.player.draw(self.screen)
         pygame.display.flip()
 
 if __name__ == "__main__":

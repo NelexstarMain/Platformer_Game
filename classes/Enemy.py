@@ -118,10 +118,10 @@ class Enemy:
         self.distance = distance  # Clamp at 1 to avoid exceeding max visibility
         print(self.distance)
         # Calculate the alpha value based on normalized distance
-        self.alpha = int(255 * (1 - normalized_distance))  # Higher distance => lower alpha
+        self.alpha = int(255 * (1 - normalized_distance)) / 6  # Higher distance => lower alpha
     
     def draw(self, screen) -> None:
-        pygame.draw.rect(screen, (self.alpha, 0, 0), self.body)
+        pygame.draw.rect(screen, (self.alpha, 0, self.alpha/2), self.body)
         self.health_bar.x = self.body.x 
         self.health_bar.y = self.body.y - 10
         self.health_bar.width = self.health / 5
@@ -134,9 +134,9 @@ class Zombie(Enemy):
     def __init__(self, x: int = 100, y: int = 100) -> None:
         super().__init__(x, y)
         self.health: int = 100
-        self.speed: int = 1
-        self.width: int = 30
-        self.height: int = 30
+        self.speed: int = 3
+        self.width: int = 45
+        self.height: int = 45
         self.view_range: int = 900
         self.fading_distance: int = 200
         self.body = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -146,23 +146,23 @@ class Pterodactylus(Enemy):
     def __init__(self, x: int = 100, y: int = 100) -> None:
         super().__init__(x, y)
         self.health: int = 50
-        self.speed: int = 2
-        self.width: int = 15
-        self.height: int = 15
+        self.speed: int = 4
+        self.width: int = 30
+        self.height: int = 30
         self.view_range: int = 400
-        self.fading_distance: int = 250
+        self.fading_distance: int = 200
         self.body = pygame.Rect(self.x, self.y, self.width, self.height)
 
-class Boss(Enemy):
-    """Boss class"""
+class Ghost(Enemy):
+    """Ghost class"""
     def __init__(self, x: int = 100, y: int = 100) -> None:
         super().__init__(x, y)
-        self.health: int = 200
-        self.speed: int = 1
-        self.width: int = 50
-        self.height: int = 50
-        self.view_range: int = 900
-        self.fading_distance: int = 250
+        self.health: int = 25
+        self.speed: int = 3
+        self.width: int = 30
+        self.height: int = 30
+        self.view_range: int = 600
+        self.fading_distance: int = 200
         self.body = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
@@ -173,7 +173,7 @@ class Spawner:
         self.x: int = x
         self.y: int = y
      
-        self.health: int = 50
+        self.health: int = 20
         self.body = pygame.Rect(self.x, self.y, 30, 30)
         self.working = True
 
@@ -193,8 +193,8 @@ class Spawner:
                         self.health -= 5
                         return enemy
                     
-                    elif name == "Boss":
-                        enemy = Pterodactylus(self.x, self.y)
+                    elif name == "Ghost":
+                        enemy = Ghost(self.x, self.y)
                         self.health -= 5
                         return enemy
                     
