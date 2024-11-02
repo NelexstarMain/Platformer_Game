@@ -1,7 +1,7 @@
 - [x] Player class: player movement, health
 - [x] Enemy class 
 - [x] Enemy simple ai
-- [ ] Player Shooting Method 
-- [ ] Game loop
+- [x] Player Shooting Method 
+- [x] Game loop
 - [ ] Player Menu: New weapons
 
