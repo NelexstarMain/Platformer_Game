@@ -10,20 +10,20 @@ import random
 pygame.init()
 
 pygame.mixer.music.load("assets/sounds/loop.mp3")
-pygame.mixer.music.set_volume(1.2)
+pygame.mixer.music.set_volume(1)
 pygame.mixer.music.play(-1)
 
 shot = pygame.mixer.Sound("assets/sounds/shot.mp3")
-shot.set_volume(0.4)
+shot.set_volume(0.2)
 hit = pygame.mixer.Sound("assets/sounds/hit.mp3")
-hit.set_volume(0.4)
+hit.set_volume(0.2)
 roar_1 = pygame.mixer.Sound("assets/sounds/roar_1.wav")
-roar_1.set_volume(0.3)
+roar_1.set_volume(0.1)
 
 roar_2 = pygame.mixer.Sound("assets/sounds/roar_2.wav")
-roar_2.set_volume(0.3)
+roar_2.set_volume(0.1)
 roar_3 = pygame.mixer.Sound("assets/sounds/roar_3.wav")
-roar_3.set_volume(0.1)
+roar_3.set_volume(0.2)
 
 class Game:
     def __init__(self):
@@ -63,7 +63,7 @@ class Game:
     def update_game_state(self):
         keys = pygame.key.get_pressed()
         for spawner in self.spawners:
-            enemy = spawner.spawn(random.choice(["Zombie", "Zombie", "Zombie", "Pterodactylus", "Pterodactylus", "Ghost"]))
+            enemy = spawner.spawn(random.choice(["Zombie", "Zombie", "Zombie", "Pterodactylus", "Pterodactylus", "Ghost", "Madzia", "Madzia"]))
             if enemy is not None:
                 self.enemies.append(enemy)
 

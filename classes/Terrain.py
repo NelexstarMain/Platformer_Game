@@ -12,7 +12,7 @@ class Terrain:
         # Grayscale intensity map (0-255)
         self.map = np.zeros((1280, 700), dtype=np.uint8)
 
-        self.fading_distance: int = 200
+        self.fading_distance: int = 350
         self.body = pygame.Rect(0, 0, 1280, 700)
         
         # Initialize Pygame
@@ -32,9 +32,13 @@ class Terrain:
                 
 
                 direction = (enemy_position - player_position)
-                if direction.length() < self.fading_distance:  # Clamp at 1 to avoid exceeding max visibility direction.length() / self.fading_distance
-                    color = int(255 * (1 - direction.length() / self.fading_distance)) / 3
+                if 50 < direction.length() < self.fading_distance:  # Clamp at 1 to avoid exceeding max visibility direction.length() / self.fading_distance
+                    color = int(255 * (1 - direction.length() / self.fading_distance)) / 1
                     self.map[i][j] = color
+                if direction.length() < 50:
+                    color = int(255 * (1 + direction.length() / 60)) / 1
+                    self.map[i][j] = color
+
 
     def draw(self, player, screen: pygame.Surface):
         self.body.center = player.body.center
