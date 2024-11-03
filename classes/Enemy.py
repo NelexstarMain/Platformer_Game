@@ -2,7 +2,7 @@ import math
 import pygame
 from typing import Union
 import random
-
+1280
 class Enemy:
     """Enemy class
 
@@ -116,7 +116,7 @@ class Enemy:
 
         return False
 
-    def simple_ai(self, player: pygame.Rect, enemies: list) -> bool:
+    def simple_ai(self, player: pygame.Rect, enemies: list) -> None:
         """Simple ai algorithm to decide which direction to move in
         when player is near
         walking in the direction of the player

@@ -1,6 +1,7 @@
 import pygame
 import math
 from typing import Union, Type
+from settings import set
 
 
 
@@ -39,7 +40,7 @@ class Bullet:
     def __init__(self, x, y, vector) -> None:
         self.x: int = x
         self.y: int = y
-        self.speed: int = 10
+        self.speed: int = set.bullet_speed
         self.body: pygame.Rect = pygame.Rect(self.x, self.y, 2, 2)
         self.vector: pygame.Vector2 = vector
         self.fading_distance: int = 250
@@ -69,7 +70,7 @@ class Bullet:
         """Updates the bullet's state"""
 
         # Check if the bullet has left the screen 
-        if self.body.x < 0 or self.body.x > 1280 or self.body.y < 0 or self.body.y > 700:
+        if self.body.x < 0 or self.body.x > set.screen_x or self.body.y < 0 or self.body.y > set.screen_y:
             del self
 
         # Check if the bullet has collided with the Enemy

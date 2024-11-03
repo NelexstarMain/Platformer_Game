@@ -2,6 +2,8 @@ import numpy as np
 import pygame
 import cv2
 
+from settings import set
+
 
 class Terrain:
     """
@@ -49,9 +51,9 @@ class Terrain:
         rotated_image: np.ndarray = cv2.rotate(self.map, cv2.ROTATE_90_CLOCKWISE)
 
         # noqa: E1101
-        cv2.imwrite('assets/zielony_obraz.png', rotated_image)  # Save the image
+        cv2.imwrite('assets/image.png', rotated_image)  # Save the image
 
-        self.image: pygame.Surface = pygame.image.load('assets/zielony_obraz.png', 'PNG')  # Load the image
+        self.image: pygame.Surface = pygame.image.load('assets/image.png', 'PNG')  # Load the image
 
     def update_visibility(self) -> None:
         """Updates terrain visibility based on distance from player"""
@@ -69,19 +71,23 @@ class Terrain:
                 player_position: pygame.Vector2 = pygame.Vector2(self.body.centerx, self.body.centery)
                 
 
-                direction = (enemy_position - player_position)
+                direction_to_pixel = (enemy_position - player_position)
 
-                if 50 < direction.length() < self.fading_distance:
-                    # Normalize the distance to a value between 0 and 1
-                    color = int(255 * (1 - direction.length() / self.fading_distance)) / 1
-                    # Clamp at 255 to avoid exceeding max visibility
-                    self.map[i][j] = color
-
-                if direction.length() < 50: 
-                    # Normalize the distance to a value between 0 and 1
-                    color = int(255 * (1 + direction.length() / 60)) / 1
-                    # Clamp at 255 to avoid exceeding max visibility
-                    self.map[i][j] = color
+                # if 50 < direction.length() < self.fading_distance:
+                #     # Normalize the distance to a value between 0 and 1
+                #     color = int(255 * (1 - direction.length() / self.fading_distance)) / 1
+                #     # Clamp at 255 to avoid exceeding max visibility
+                #     self.map[i][j] = color
+                
+                for phase in set.light_phases:
+                    lenght = phase[0]
+                    direction = phase[1]
+                    darknes = phase[2]
+                    fading_distance = phase[3]
+                    
+                    if lenght < direction_to_pixel.length() < fading_distance:
+                        color = int(255 * (direction * direction_to_pixel.length() / fading_distance)) / darknes
+                        self.map[i][j] = color
 
 
     def draw(self, player, screen: pygame.Surface) -> None:
